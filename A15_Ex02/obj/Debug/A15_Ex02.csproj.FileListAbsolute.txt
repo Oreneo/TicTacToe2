@@ -1,0 +1,6 @@
+C:\Users\Tomer\Source\Repos\TicTacToe\A15_Ex02\bin\Debug\A15_Ex02.exe
+C:\Users\Tomer\Source\Repos\TicTacToe\A15_Ex02\bin\Debug\A15_Ex02.pdb
+C:\Users\Tomer\Source\Repos\TicTacToe\A15_Ex02\bin\Debug\Ex02.ConsoleUtils.dll
+C:\Users\Tomer\Source\Repos\TicTacToe\A15_Ex02\obj\Debug\A15_Ex02.csprojResolveAssemblyReference.cache
+C:\Users\Tomer\Source\Repos\TicTacToe\A15_Ex02\obj\Debug\A15_Ex02.exe
+C:\Users\Tomer\Source\Repos\TicTacToe\A15_Ex02\obj\Debug\A15_Ex02.pdb
