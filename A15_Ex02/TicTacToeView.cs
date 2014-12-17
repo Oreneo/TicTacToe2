@@ -13,7 +13,7 @@ namespace A15_Ex02
         {
             //while ( !islose && !isTRiwe)
             //m_GameControllerObj.
-            this.startGame();
+            startGame();  //this ?
         }
 
         public void startGame()
@@ -28,27 +28,13 @@ namespace A15_Ex02
             sizeOfBoard = getValidSizeOfBoardFromUser();
             m_GameController.createBoard(sizeOfBoard);
             m_GameController.GameType = chooseGameType();      // m_Players has 2 options. need to know game vs pc or 2 players
+            getPlayerNames();
+            m_GameController.setPlayerTypes();
 
             Console.WriteLine("You chose : " + m_GameController.GameType);   //string format
 
-            Console.WriteLine("Player 1, please enter your name :");
-            m_GameController.Player1 = new Player(Console.ReadLine());
-            Console.WriteLine("Player 2, please enter your name :");
-            m_GameController.Player2 = new Player(Console.ReadLine());
-            Ex02.ConsoleUtils.Screen.Clear();
             m_GameController.randomChoosePlayer();
-
-            // decice who starts - function
-            if (m_GameController.Player1.PlayerSymbol.Equals(ePlayerSymbol.X))
-            {
-                Console.WriteLine(m_GameController.Player1.PlayerName + " you have been randomly chosen to start the game! You are X.");
-                Console.WriteLine(m_GameController.Player2.PlayerName + " you are O.\n");   //string format?
-            }
-            else
-            {
-                Console.WriteLine(m_GameController.Player2.PlayerName + " you have been randomly chosen to start the game! You are X.");
-                Console.WriteLine(m_GameController.Player1.PlayerName + " you are O.\n");     //string format?
-            }
+            
 
             displayBoard(m_GameController.GameBoard);
 
@@ -57,16 +43,31 @@ namespace A15_Ex02
             {
                 for (i = 1; i <= m_GameController.GameBoard.SizeOfBoard * m_GameController.GameBoard.SizeOfBoard; i++)    // ways of ending this loop : found winner=break, one of users quit=break. draw= ?
                 {
-                    if (m_GameController.Player1.IsMyTurn == true)
+                    if (m_GameController.GameType.Equals(eGameType.PlayerVsPlayer))
                     {
-                        userQuit = playerMove(m_GameController.Player1, i);       //record player last move if.... DONE
+                        if (m_GameController.Player1.IsMyTurn == true)
+                        {
+                            userQuit = playerMove(m_GameController.Player1, i);
+                        }
+                        else
+                        {
+                            userQuit = playerMove(m_GameController.Player2, i);
+                        }
                     }
                     else
                     {
-                        userQuit = playerMove(m_GameController.Player2, i);
+                        if (m_GameController.Player1.IsMyTurn == true)
+                        {
+                            userQuit = playerMove(m_GameController.Player1, i);
+                        }
+                        else
+                        {
+                            ComputerAI computer = new ComputerAI(m_GameController.GameBoard);
+                            computer.computerMove(m_GameController, m_GameController.Player2, i);
+                        }
                     }
 
-                    if (userQuit == true)  // && pvp game
+                    if (userQuit == true && m_GameController.GameType.Equals(eGameType.PlayerVsPlayer))  // && pvp game
                     {
                         if (m_GameController.Player2.IsMyTurn == true)
                         {
@@ -107,6 +108,9 @@ namespace A15_Ex02
                             }
                         }
                     }
+
+                    Ex02.ConsoleUtils.Screen.Clear();
+                    displayBoard(m_GameController.GameBoard);   // redundant ?
 
                     if (i == (m_GameController.GameBoard.SizeOfBoard * m_GameController.GameBoard.SizeOfBoard)) //reached end... = draw ?
                     {
@@ -256,7 +260,6 @@ namespace A15_Ex02
             return userQuit;
         }
 
-        // public void getValidCoordinate
         public bool getValidCoordinatePoint(Board i_CurrentBoard, ref int io_CoordinatePoint, string i_RowOrCol, Player i_Player)// (no q) (call other func) [reuse]
         {
             string strCoordinatePoint;
@@ -271,7 +274,7 @@ namespace A15_Ex02
                 strCoordinatePoint = Console.ReadLine();
                 if (strCoordinatePoint.Equals("q") || strCoordinatePoint.Equals("Q"))
                 {
-                    goodCoordinatePoint = false;   // check this........... y is recognized as good input ! fix
+                    goodCoordinatePoint = false;
                     Ex02.ConsoleUtils.Screen.Clear();
                     displayBoard(i_CurrentBoard);
                     Console.WriteLine("Are you sure you want to quit? press Y for yes. N for no.");
@@ -287,7 +290,7 @@ namespace A15_Ex02
                 }
 
                 goodCoordinatePoint = int.TryParse(strCoordinatePoint, out io_CoordinatePoint);
-                if (goodCoordinatePoint == false || io_CoordinatePoint > i_CurrentBoard.SizeOfBoard || io_CoordinatePoint < 1)   // change to sizeofmatrix or something
+                if (goodCoordinatePoint == false || io_CoordinatePoint > i_CurrentBoard.SizeOfBoard || io_CoordinatePoint < 1)
                 {
                     goodCoordinatePoint = false;
                     Ex02.ConsoleUtils.Screen.Clear();
@@ -375,15 +378,52 @@ namespace A15_Ex02
             
             Console.WriteLine(boardString);
         }
-        /*
-        public void displayMessage(string i_MsgStr)
+
+        public void getPlayerNames()
         {
-            Console.WriteLine(i_MsgStr);
+            if(m_GameController.GameType.Equals(eGameType.PlayerVsPlayer))
+            {
+                Console.WriteLine("Player 1, please enter your name :");
+                m_GameController.Player1 = new Player(Console.ReadLine());
+                Console.WriteLine("Player 2, please enter your name :");
+                m_GameController.Player2 = new Player(Console.ReadLine());
+            }
+            else
+            {
+                Console.WriteLine("Player, please enter your name :");
+                m_GameController.Player1 = new Player(Console.ReadLine());
+                m_GameController.Player2 = new Player("Computer");
+            }
+            
+            Ex02.ConsoleUtils.Screen.Clear();
         }
 
-        public string getInputStringFromUser()
+        public void notifyOrderAndSymbolsOfPlayers()
         {
-            return Console.ReadLine();
-        }*/
+            if (m_GameController.GameType.Equals(eGameType.PlayerVsPlayer))
+            {
+                if(m_GameController.Player1.PlayerSymbol.Equals(ePlayerSymbol.X))
+                {
+                    Console.WriteLine(m_GameController.Player1.PlayerName + " you have been randomly chosen to start the game! You are X.");
+                    Console.WriteLine(m_GameController.Player2.PlayerName + " you are O.\n");   //string format?
+                }
+                else
+                {
+                    Console.WriteLine(m_GameController.Player2.PlayerName + " you have been randomly chosen to start the game! You are X.");
+                    Console.WriteLine(m_GameController.Player1.PlayerName + " you are O.\n");     //string format?
+                }
+            }
+            else
+            {
+                if (m_GameController.Player1.PlayerSymbol.Equals(ePlayerSymbol.X))   //human playyer is starting
+                {
+                    Console.WriteLine(m_GameController.Player1.PlayerName + " you have been randomly chosen to start the game! You are X.");
+                }
+                else
+                {
+                    Console.WriteLine("My condolonces, the Computer will start with X. You are O.");
+                }
+            }
+        }
     }
 }

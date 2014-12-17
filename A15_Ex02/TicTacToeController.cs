@@ -13,17 +13,14 @@ namespace A15_Ex02
     public class TicTacToeController
     {
         private Board m_GameBoard = null;
-        private Player m_Player1;
-        private Player m_Player2;
+        private Player m_Player1 = null;
+        private Player m_Player2 = null;
         private eGameType m_GameType;
-        Random random = new Random();
-
-        //private TicTacToeView m_GameView = new TicTacToeView();
-
+        private Random random = new Random();
 
         public TicTacToeController()
         {
-            //this.startGame();
+            
         }
 
         public Board GameBoard
@@ -118,11 +115,20 @@ namespace A15_Ex02
             }
         }
 
-        public void gameProgress ()
+        public void setPlayerTypes()
         {
+            m_Player1.PlayerType = ePlayerType.Human;
+            //m_Player1.setPlayerType(ePlayerType.Human);
 
+            if(GameType.Equals(eGameType.PlayerVsPlayer))
+            {
+                m_Player2.PlayerType = ePlayerType.Human;
+            }
+            else
+            {
+                m_Player2.PlayerType = ePlayerType.Computer; //other constructor or 
+            }
         }
-
         public bool checkIfCoordinateIsTaken(int i_row, int i_col, Board i_CurrentBoard)
         {
             bool isTaken = false;
