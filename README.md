@@ -1,3 +1,3 @@
-# TicTacToe exercise Guy ronen .NET course
+# TicTacToe
 
-.NET console application TicTacToe game
+.NET console application TicTacToe game [Guy ronen course exercise]
